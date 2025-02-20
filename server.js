@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import validator from 'validator';
 
 dotenv.config();
 
@@ -51,6 +52,16 @@ app.post('/signup', async(req,res)=>{
     email:req.body.email,
     password:req.body.password
   }
+
+  if (!validator.isEmail(req.body.email)) {
+    return res.send("Invalid email format.");
+  }
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(req.body.password)) {
+    return res.send("Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.");
+  }
+
 
   console.log('Received data:', data);
 
