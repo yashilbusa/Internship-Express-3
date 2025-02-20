@@ -28,6 +28,7 @@ const User = mongoose.model('User',userschema)
 
 app.use(express.static('public'))
 app.use(express.json())
+app.use(express.urlencoded({ extended: true })); 
 
 app.set('view engine','ejs')
 
@@ -51,7 +52,9 @@ app.post('/signup', async(req,res)=>{
     password:req.body.password
   }
 
-  const checkUser = await User.findOne({name: data.name, email:data.email})
+  console.log('Received data:', data);
+
+  const checkUser = await User.findOne({username: data.username, email: data.email})
 
   if(checkUser){
     res.send("User Already Exits. Please Choose a Different Username or Email")
@@ -60,14 +63,16 @@ app.post('/signup', async(req,res)=>{
     const hashPassword = await bcrypt.hash(data.password, 10)
     data.password = hashPassword
 
-    const userData = await User.insertOne(data)
-    console.log(userData);
+    const userData = new User(data); 
+    await userData.save(); 
+    res.render("login")
+
   }
 })
 
 app.post('/login', async(req,res)=>{
   try {
-      const checkUser = await User.findOne({name: data.name, email:data.email})
+      const checkUser = await User.findOne({username: req.body.username, email: req.body.email})
       if(!checkUser){
         res.send("User Not Found")
       }
