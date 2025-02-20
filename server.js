@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
@@ -41,3 +42,45 @@ app.get('/login',(req,res)=>{
 app.get('/signup',(req,res)=>{
   res.render("signup")
 })  
+
+app.post('/signup', async(req,res)=>{
+
+  const data = {
+    username:req.body.username,
+    email:req.body.email,
+    password:req.body.password
+  }
+
+  const checkUser = await User.findOne({name: data.name, email:data.email})
+
+  if(checkUser){
+    res.send("User Already Exits. Please Choose a Different Username or Email")
+  } else {
+
+    const hashPassword = await bcrypt.hash(data.password, 10)
+    data.password = hashPassword
+
+    const userData = await User.insertOne(data)
+    console.log(userData);
+  }
+})
+
+app.post('/login', async(req,res)=>{
+  try {
+      const checkUser = await User.findOne({name: data.name, email:data.email})
+      if(!checkUser){
+        res.send("User Not Found")
+      }
+
+      const isPasswordMatch = await bcrypt.compare(req.body.password, checkUser.password)
+
+      if(isPasswordMatch){
+        res.render("shop")
+      }else{
+        res.send("Incorrect Password !!!")
+      }
+
+  } catch (err) {
+      res.send("Incorrect Details !!!")
+  }
+})
