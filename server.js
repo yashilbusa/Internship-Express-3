@@ -66,7 +66,6 @@ app.post('/signup', async(req,res)=>{
     const userData = new User(data); 
     await userData.save(); 
     res.render("login")
-
   }
 })
 
