@@ -1,5 +1,8 @@
 import express from 'express'
 import mongoose from 'mongoose';
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 const app = express()
 const port = 4004
@@ -22,10 +25,19 @@ const userschema = new mongoose.Schema({
 })
 const User = mongoose.model('User',userschema)
 
+app.use(express.static('public'))
 app.use(express.json())
 
-app.set('viewengine','ejs')
+app.set('view engine','ejs')
 
 app.get('/',(req,res)=>{
   res.render("home")
+})  
+
+app.get('/login',(req,res)=>{
+  res.render("login")
+})  
+
+app.get('/signup',(req,res)=>{
+  res.render("signup")
 })  
