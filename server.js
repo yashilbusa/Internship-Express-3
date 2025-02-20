@@ -15,3 +15,17 @@ try {
     console.error('Error connecting to MongoDB:', error.message);
 }
 
+const userschema = new mongoose.Schema({
+  username:String,
+  email:String,
+  password:String
+})
+const User = mongoose.model('User',userschema)
+
+app.use(express.json())
+
+app.set('viewengine','ejs')
+
+app.get('/',(req,res)=>{
+  res.render("home")
+})  
