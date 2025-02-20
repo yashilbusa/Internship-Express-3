@@ -90,7 +90,12 @@ app.post('/login', async(req,res)=>{
       const isPasswordMatch = await bcrypt.compare(req.body.password, checkUser.password)
 
       if(isPasswordMatch){
-        res.render("shop")
+        const token = jwt.sign({ userId: checkUser._id, username: checkUser.username }, process.env.JWT_SECRET, {
+          expiresIn: '1h'
+        });
+      res.json({ message: 'Login successful', token });
+      res.render("shop")
+
       }else{
         res.send("Incorrect Password !!!")
       }
