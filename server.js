@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
+import jwt from 'jsonwebtoken'; 
 
 dotenv.config();
 
@@ -23,7 +24,8 @@ try {
 const userschema = new mongoose.Schema({
   username:String,
   email:String,
-  password:String
+  password:String,
+  tokens: [{ type: String }]
 })
 const User = mongoose.model('User',userschema)
 
@@ -62,8 +64,7 @@ app.post('/signup', async(req,res)=>{
     return res.send("Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.");
   }
 
-
-  console.log('Received data:', data);
+  // console.log('Received data:', data);
 
   const checkUser = await User.findOne({username: data.username, email: data.email})
 
@@ -90,12 +91,43 @@ app.post('/login', async(req,res)=>{
       const isPasswordMatch = await bcrypt.compare(req.body.password, checkUser.password)
 
       if(isPasswordMatch){
+        const token = jwt.sign(
+          { userId: checkUser._id, username: checkUser.username },
+          process.env.JWT_SECRET_KEY, 
+          { expiresIn: '1h' } 
+        );
+
+        // checkUser.tokens = [];  
+
+        checkUser.tokens.push(token);  
+        await checkUser.save(); 
         res.render("shop")
       }else{
         res.send("Incorrect Password !!!")
       }
-
   } catch (err) {
       res.send("Incorrect Details !!!")
   }
 })
+
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    return res.send("Token is required.");
+  }
+
+  const tokenWithoutBearer = token.replace('Bearer ', '');
+
+  jwt.verify(tokenWithoutBearer, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.send("Invalid or expired token.");
+    }
+    req.user = decoded; 
+    next();
+  });
+};
+
+app.get('/shop', verifyToken, (req, res) => {
+  res.render("shop");
+});
