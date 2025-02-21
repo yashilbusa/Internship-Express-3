@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import validator from 'validator';
 import jwt from 'jsonwebtoken'; 
 
-dotenv.config();
+dotenv.config({path: "./vars/.env"})
 
 const app = express()
 const port = 4004
