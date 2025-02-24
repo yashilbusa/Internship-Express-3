@@ -54,6 +54,7 @@ app.post('/signup', async(req,res)=>{
     email:req.body.email,
     password:req.body.password
   }
+  
 
   if (!validator.isEmail(req.body.email)) {
     return res.send("Invalid email format.");
@@ -110,24 +111,24 @@ app.post('/login', async(req,res)=>{
   }
 })
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
+// const verifyToken = (req, res, next) => {
+//   const token = req.headers['authorization'];
 
-  if (!token) {
-    return res.send("Token is required.");
-  }
+//   if (!token) {
+//     return res.send("Token is required.");
+//   }
 
-  const tokenWithoutBearer = token.replace('Bearer ', '');
+//   const tokenWithoutBearer = token.replace('Bearer ', '');
 
-  jwt.verify(tokenWithoutBearer, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.send("Invalid or expired token.");
-    }
-    req.user = decoded; 
-    next();
-  });
-};
+//   jwt.verify(tokenWithoutBearer, process.env.JWT_SECRET, (err, decoded) => {
+//     if (err) {
+//       return res.send("Invalid or expired token.");
+//     }
+//     req.user = decoded; 
+//     next();
+//   });
+// };
 
-app.get('/shop', verifyToken, (req, res) => {
-  res.render("shop");
-});
+// app.get('/shop', verifyToken, (req, res) => {
+//   res.render("shop");
+// });
