@@ -128,7 +128,3 @@ app.post('/login', async(req,res)=>{
 //     next();
 //   });
 // };
-
-// app.get('/shop', verifyToken, (req, res) => {
-//   res.render("shop");
-// });
