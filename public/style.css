@@ -1,11 +1,9 @@
-/* Reset some default styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body and overall styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
@@ -13,7 +11,6 @@ body {
     line-height: 1.6;
 }
 
-/* Container for centering content */
 .container {
     width: 100%;
     max-width: 400px;
@@ -24,14 +21,12 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Heading style */
 h1 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
 }
 
-/* Form styles */
 form {
     display: flex;
     flex-direction: column;
@@ -71,7 +66,6 @@ button:hover {
     background-color: #45a049;
 }
 
-/* Links at the bottom */
 p {
     text-align: center;
 }
@@ -85,7 +79,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Navigation for home page */
 nav {
     text-align: center;
     margin-top: 20px;

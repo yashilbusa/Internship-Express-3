@@ -25,7 +25,7 @@ const userschema = new mongoose.Schema({
   username:String,
   email:String,
   password:String,
-  tokens: [{ type: String }]
+  token:String
 })
 const User = mongoose.model('User',userschema)
 
@@ -92,15 +92,13 @@ app.post('/login', async(req,res)=>{
       const isPasswordMatch = await bcrypt.compare(req.body.password, checkUser.password)
 
       if(isPasswordMatch){
-        const token = jwt.sign(
+        const newToken = jwt.sign(
           { userId: checkUser._id, username: checkUser.username },
           process.env.JWT_SECRET_KEY, 
           { expiresIn: '1h' } 
         );
 
-        // checkUser.tokens = [];  
-
-        checkUser.tokens.push(token);  
+        checkUser.token = newToken;
         await checkUser.save(); 
         res.render("shop")
       }else{
@@ -128,3 +126,7 @@ app.post('/login', async(req,res)=>{
 //     next();
 //   });
 // };
+
+// app.get("/shop",verifyToken,(req,res)=>{
+
+// })
