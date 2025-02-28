@@ -100,7 +100,6 @@ app.post('/login', async(req,res)=>{
 
         checkUser.token = newToken;
         await checkUser.save(); 
-        res.render("shop")
       }else{
         res.send("Incorrect Password !!!")
       }
@@ -109,24 +108,22 @@ app.post('/login', async(req,res)=>{
   }
 })
 
-// const verifyToken = (req, res, next) => {
-//   const token = req.headers['authorization'];
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
 
-//   if (!token) {
-//     return res.send("Token is required.");
-//   }
+  if (!token) {
+    return res.send("Token is required.");
+  }
 
-//   const tokenWithoutBearer = token.replace('Bearer ', '');
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.send("Invalid or expired token.");
+    }
+    req.user = decoded.user; 
+    next();
+  });
+};
 
-//   jwt.verify(tokenWithoutBearer, process.env.JWT_SECRET, (err, decoded) => {
-//     if (err) {
-//       return res.send("Invalid or expired token.");
-//     }
-//     req.user = decoded; 
-//     next();
-//   });
-// };
-
-// app.get("/shop",verifyToken,(req,res)=>{
-
-// })
+app.get("/shop",verifyToken,(req,res)=>{
+  res.status(200).json({ message: 'Route Accessed' });
+})
