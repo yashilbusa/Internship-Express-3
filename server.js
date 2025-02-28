@@ -37,6 +37,14 @@ app.set('view engine','ejs')
 
 app.get('/',(req,res)=>{
   res.render("home")
+})
+
+app.get('/signup',(req,res)=>{
+  res.render("signup")
+})  
+
+app.get('/login',(req,res)=>{
+  res.render("login")
 })  
 
 app.post('/signup', async(req,res)=>{
@@ -70,7 +78,7 @@ app.post('/signup', async(req,res)=>{
 
     const userData = new User(data); 
     await userData.save(); 
-    res.render("login")
+    res.render("home")
   }
 })
 
@@ -91,6 +99,8 @@ app.post('/login', async(req,res)=>{
         );
 
         checkUser.token = newToken;
+        res.setHeader('Authorization', 'Bearer '+ newToken);
+
         await checkUser.save(); 
         res.render("home");
       }else{
@@ -108,7 +118,7 @@ const verifyToken = (req, res, next) => {
     return res.send("Token is required.");
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err) => {
     if (err) {
       return res.send("Invalid or expired token.");
     }
