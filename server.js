@@ -39,14 +39,6 @@ app.get('/',(req,res)=>{
   res.render("home")
 })  
 
-app.get('/login',(req,res)=>{
-  res.render("login")
-})  
-
-app.get('/signup',(req,res)=>{
-  res.render("signup")
-})  
-
 app.post('/signup', async(req,res)=>{
 
   const data = {
@@ -100,6 +92,7 @@ app.post('/login', async(req,res)=>{
 
         checkUser.token = newToken;
         await checkUser.save(); 
+        res.render("home");
       }else{
         res.send("Incorrect Password !!!")
       }
@@ -109,7 +102,7 @@ app.post('/login', async(req,res)=>{
 })
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
+  const token = req.headers['Authorization'];
 
   if (!token) {
     return res.send("Token is required.");
